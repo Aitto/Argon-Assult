@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     private int m_maxFPS = 30;
     [SerializeField]
     private float m_pitchControlFactor = 10f,m_rollControlFactor = 10f;
+    [SerializeField] ParticleSystem m_particle;
 
     private float m_verticalThrow=0f,m_horizontalThrow=0f;
 
@@ -35,6 +36,7 @@ public class Player : MonoBehaviour
         
         HandleMovement();
         HandleRotation();
+        //HandleParticles();
     }
 
     private void HandleMovement()
@@ -52,7 +54,7 @@ public class Player : MonoBehaviour
 
         //Debug.Log("H: " + horizontalPosition + "\nV: "+verticalPosition);
 
-        Vector3 newPosition = new Vector3(horizontalPosition, verticalPosition, this.transform.localPosition.z);
+        Vector3 newPosition = new Vector3(horizontalPosition, verticalPosition, 20.0f);
         this.transform.localPosition = newPosition;
 
         //transform.localRotation = Quaternion.Euler(1,1,0);
@@ -66,4 +68,22 @@ public class Player : MonoBehaviour
         transform.localRotation = Quaternion.Euler(pitch,yaw, m_horizontalThrow * -m_rollControlFactor);
         
     }
+
+    private void HandleParticles()
+    {
+        if(m_particle!=null && !m_particle.isPlaying)
+        {
+            m_particle.Play();
+        }
+    }
+
+    
+    void OnCollisionEnter(Collision other)
+    {
+        if(other.gameObject.tag == "Terrain")
+        {
+            HandleParticles();
+        }
+    }
+
 }
